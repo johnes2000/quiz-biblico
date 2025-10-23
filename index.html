@@ -8,30 +8,20 @@
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  /* Fundo cobrindo toda a tela com leve escurecimento */
-  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('fundo.jpg') no-repeat center center fixed;
+  background: url('https://cdn.pixabay.com/photo/2017/03/10/18/39/jesus-2130875_1280.jpg') no-repeat center center fixed;
   background-size: cover;
   color: #fff;
   text-align: center;
   overflow-x: hidden;
   position: relative;
 }
-
-/* Imagens laterais fixas */
-.side-image {
+.overlay {
   position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
-  max-height: 80vh;
-  opacity: 0.8;
-  pointer-events: none;
-  user-select: none;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.15);
+  z-index: -1;
 }
-.side-left { left: 0; margin-left: 10px; max-width: 180px; }
-.side-right { right: 0; margin-right: 10px; max-width: 180px; }
-
-.overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.15); z-index: -1; }
-
 .container {
   backdrop-filter: blur(12px);
   background: rgba(255, 255, 255, 0.15);
@@ -47,77 +37,41 @@ body {
   z-index: 10;
 }
 .container.show { opacity: 1; transform: translateY(0); }
-
 h1 { font-size: 2em; text-shadow: 2px 2px 5px rgba(0,0,0,0.6); }
 h2 { color: #fff; margin-bottom: 10px; }
-
 input[type="text"], input[type="date"] {
-  padding: 8px;
-  border-radius: 10px;
-  border: none;
-  margin: 5px;
-  font-size: 1em;
+  padding: 8px; border-radius: 10px; border: none; margin: 5px; font-size: 1em;
 }
-
 button {
   background: linear-gradient(45deg, #2ecc71, #27ae60);
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: 0.3s;
-  margin: 5px;
-  font-weight: bold;
-  box-shadow: 0 4px 8px rgba(0,128,0,0.4);
+  border: none; color: white; padding: 10px 20px;
+  border-radius: 25px; cursor: pointer; transition: 0.3s;
+  margin: 5px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,128,0,0.4);
 }
 button:hover {
   transform: scale(1.05);
   background: linear-gradient(45deg, #27ae60, #2ecc71);
 }
-
-/* Modais */
 .modal {
-  display: none;
-  position: fixed;
-  top:0; left:0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.8);
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-  z-index: 20;
+  display: none; position: fixed; top:0; left:0;
+  width: 100%; height: 100%; background: rgba(0,0,0,0.8);
+  justify-content: center; align-items: center;
+  opacity: 0; transition: opacity 0.6s ease; z-index: 20;
 }
 .modal.show { display: flex; opacity: 1; }
-
 .modal-content {
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(15px);
-  padding: 20px;
-  border-radius: 20px;
-  width: 80%;
-  max-width: 700px;
-  color: #fff;
+  background: rgba(255,255,255,0.15); backdrop-filter: blur(15px);
+  padding: 20px; border-radius: 20px; width: 80%; max-width: 700px; color: #fff;
 }
-
-.bar { height: 25px; background: linear-gradient(90deg, #00c6ff, #0072ff); border-radius: 10px; margin: 8px 0; width: 0%; transition: width 1.2s ease-in-out; }
+.bar { height: 25px; background: linear-gradient(90deg, #00c6ff, #0072ff);
+ border-radius: 10px; margin: 8px 0; width: 0%; transition: width 1.2s ease-in-out; }
 .player { margin: 10px 0; text-align: left; }
-
-/* Responsividade */
-@media(max-width: 700px){
-  .side-left, .side-right { display: none; }
-  .container { margin: 30px 20px; }
-}
+@media(max-width: 700px){ .container { margin: 30px 20px; } }
 </style>
 </head>
 <body>
-
-<img src="IMG_6471.JPG" alt="Aventureiros da Fé" class="side-image side-left" />
-<img src="9ce3d3ca-ca5f-44ad-8afe-31942d64353c.png" alt="Jesus com crianças" class="side-image side-right" />
 <div class="overlay"></div>
 
-<!-- Tela Inicial -->
 <div class="container show" id="startScreen">
   <h1>📖 Quiz Bíblico — Aventureiros da Fé 🌟</h1>
   <p>Insira seu nome e a data para começar:</p>
@@ -128,7 +82,6 @@ button:hover {
   <button onclick="showStats()">📊 Estatísticas</button>
 </div>
 
-<!-- Quiz -->
 <div class="container" id="quizContainer" style="display:none;">
   <h2 id="levelTitle"></h2>
   <p id="question"></p>
@@ -136,7 +89,6 @@ button:hover {
   <p>Pontuação: <span id="score">0</span> | Acertos: <span id="correct">0</span> | Erros: <span id="wrong">0</span></p>
 </div>
 
-<!-- Modal de Estatísticas -->
 <div class="modal" id="statsModal">
   <div class="modal-content">
     <h2>🏆 Ranking dos Aventureiros da Fé</h2>
@@ -146,7 +98,6 @@ button:hover {
   </div>
 </div>
 
-<!-- Modal de Fim de Jogo -->
 <div class="modal" id="endModal">
   <div class="modal-content">
     <h2>🎉 Fim do Quiz!</h2>
@@ -156,16 +107,17 @@ button:hover {
 </div>
 
 <script>
-const audioCorrect = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg');
-const audioWrong = new Audio('https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg');
-
-const questions = [
-  {q:'Quem construiu a arca?', a:['Moisés','Noé','Abraão','Davi'], c:1},
-  {q:'Qual o primeiro livro da Bíblia?', a:['Gênesis','Êxodo','Levítico','Salmos'], c:0},
-  {q:'Quem foi jogado na cova dos leões?', a:['Elias','Jonas','Daniel','José'], c:2},
-  {q:'Onde Jesus nasceu?', a:['Jerusalém','Belém','Nazaré','Egito'], c:1},
-  {q:'Quem negou Jesus três vezes?', a:['João','Pedro','Tiago','Judas'], c:1}
-];
+// Perguntas exemplo: 10 níveis x 10 perguntas
+const questions = [];
+for(let level=1; level<=10; level++){
+  for(let q=1; q<=10; q++){
+    questions.push({
+      q:`Nível ${level} - Pergunta ${q}: Qual é a resposta correta?`,
+      a:['A','B','C','D'],
+      c:Math.floor(Math.random()*4)
+    });
+  }
+}
 
 let currentQuestion = 0;
 let score = 0;
@@ -190,7 +142,9 @@ function startGame() {
 function showQuestion() {
   if (currentQuestion >= questions.length) { endGame(); return; }
   const q = questions[currentQuestion];
-  document.getElementById('levelTitle').innerText = `Pergunta ${currentQuestion + 1}`;
+  const levelNumber = Math.floor(currentQuestion/10) + 1;
+  const questionNumber = (currentQuestion%10)+1;
+  document.getElementById('levelTitle').innerText = `Nível ${levelNumber} - Pergunta ${questionNumber}`;
   document.getElementById('question').innerText = q.q;
   const answersDiv = document.getElementById('answers');
   answersDiv.innerHTML = '';
@@ -198,15 +152,13 @@ function showQuestion() {
     const btn = document.createElement('button');
     btn.innerText = option;
     btn.onclick = () => checkAnswer(i);
-    btn.setAttribute('aria-label', option);
     answersDiv.appendChild(btn);
   });
 }
 
 function checkAnswer(i) {
   const q = questions[currentQuestion];
-  if (i === q.c) { score += 10; correct++; audioCorrect.play(); } 
-  else { wrong++; audioWrong.play(); }
+  if(i === q.c){ score += 10; correct++; } else { wrong++; }
   document.getElementById('score').innerText = score;
   document.getElementById('correct').innerText = correct;
   document.getElementById('wrong').innerText = wrong;
@@ -219,67 +171,27 @@ function endGame() {
   document.getElementById('endMessage').innerText = `${playerName}, sua pontuação final é ${score} pts! 🎉`;
   const modal = document.getElementById('endModal');
   modal.style.display = 'flex';
-  setTimeout(() => modal.classList.add('show'), 50);
+  setTimeout(()=>modal.classList.add('show'),50);
 }
 
 function closeEndModal(){
   const modal = document.getElementById('endModal');
   modal.classList.remove('show');
-  setTimeout(() => modal.style.display = 'none', 600);
+  setTimeout(() => modal.style.display = 'none',600);
   resetGame();
   document.getElementById('quizContainer').classList.remove('show');
   setTimeout(() => {
-    document.getElementById('quizContainer').style.display = 'none';
-    document.getElementById('startScreen').style.display = 'block';
+    document.getElementById('quizContainer').style.display='none';
+    document.getElementById('startScreen').style.display='block';
     setTimeout(() => document.getElementById('startScreen').classList.add('show'), 50);
-  }, 600);
+  },600);
 }
 
-function resetGame() {
-  currentQuestion = 0; score = 0; correct = 0; wrong = 0;
-  document.getElementById('score').innerText = score;
-  document.getElementById('correct').innerText = correct;
-  document.getElementById('wrong').innerText = wrong;
+function resetGame() { currentQuestion=0; score=0; correct=0; wrong=0;
+  document.getElementById('score').innerText=score;
+  document.getElementById('correct').innerText=correct;
+  document.getElementById('wrong').innerText=wrong;
 }
 
 function saveStats() {
-  const stats = JSON.parse(localStorage.getItem('quizStats') || '[]');
-  stats.push({ name: playerName, date: playDate, score, correct, wrong, level: questions.length });
-  localStorage.setItem('quizStats', JSON.stringify(stats));
-}
-
-function showStats() {
-  const statsModal = document.getElementById('statsModal');
-  const rankingDiv = document.getElementById('ranking');
-  rankingDiv.innerHTML = '';
-  let stats = JSON.parse(localStorage.getItem('quizStats') || '[]');
-  stats.sort((a,b) => b.score - a.score);
-  const maxScore = stats.length ? Math.max(...stats.map(s=>s.score)) : 1;
-  stats.forEach((s, idx) => {
-    const playerDiv = document.createElement('div');
-    playerDiv.className = 'player';
-    playerDiv.innerHTML = `<strong>${idx+1}. ${s.name}</strong> (${s.date}) - ${s.score} pts - Nível ${s.level}`;
-    const bar = document.createElement('div');
-    bar.className = 'bar';
-    playerDiv.appendChild(bar);
-    rankingDiv.appendChild(playerDiv);
-    setTimeout(() => { bar.style.width = `${(s.score/maxScore)*100}%`; }, 50);
-  });
-  statsModal.style.display = 'flex';
-  setTimeout(() => statsModal.classList.add('show'), 50);
-}
-
-function closeStats(){
-  const modal = document.getElementById('statsModal');
-  modal.classList.remove('show');
-  setTimeout(() => modal.style.display = 'none', 600);
-}
-
-function clearStats(){
-  localStorage.removeItem('quizStats');
-  document.getElementById('ranking').innerHTML = '';
-}
-</script>
-
-</body>
-</html>
+  const stats = JSON.parse
