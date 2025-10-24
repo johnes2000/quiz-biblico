@@ -1,197 +1,372 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiz Bíblico - Aventureiros da Fé</title>
 <style>
 body {
-  margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: url('https://cdn.pixabay.com/photo/2017/03/10/18/39/jesus-2130875_1280.jpg') no-repeat center center fixed;
-  background-size: cover;
+  background: linear-gradient(135deg, #4facfe, #00f2fe, #43e97b, #38f9d7);
+  background-size: 400% 400%;
+  animation: gradientMove 15s ease infinite;
   color: #fff;
   text-align: center;
-  overflow-x: hidden;
-  position: relative;
+  margin: 0;
+  padding: 20px;
 }
-.overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.15);
-  z-index: -1;
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 .container {
-  backdrop-filter: blur(12px);
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
-  padding: 25px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 15px;
+  padding: 20px;
   max-width: 600px;
-  margin: 60px auto;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-  position: relative;
-  z-index: 10;
+  margin: 20px auto;
+  box-shadow: 0 0 15px rgba(0,0,0,0.7);
 }
-.container.show { opacity: 1; transform: translateY(0); }
-h1 { font-size: 2em; text-shadow: 2px 2px 5px rgba(0,0,0,0.6); }
-h2 { color: #fff; margin-bottom: 10px; }
+h1 { font-size:2em; margin-bottom:20px; text-shadow:2px 2px 5px #000; }
 input[type="text"], input[type="date"] {
-  padding: 8px; border-radius: 10px; border: none; margin: 5px; font-size: 1em;
+  padding:10px; margin:10px; width:80%; border:none; border-radius:5px;
 }
 button {
-  background: linear-gradient(45deg, #2ecc71, #27ae60);
-  border: none; color: white; padding: 10px 20px;
-  border-radius: 25px; cursor: pointer; transition: 0.3s;
-  margin: 5px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,128,0,0.4);
+  padding:10px 20px; margin:10px; border:none; border-radius:25px; color:white;
+  font-size:1.1em; cursor:pointer; background: linear-gradient(45deg,#28a745,#218838);
+  transition:0.3s;
 }
-button:hover {
-  transform: scale(1.05);
-  background: linear-gradient(45deg, #27ae60, #2ecc71);
+button:hover { transform: scale(1.05); background: linear-gradient(45deg,#218838,#28a745); }
+#quizContainer { display:none; }
+.answer-btn {
+  display:block; margin:10px auto; padding:12px 25px; border:none; border-radius:25px;
+  font-size:1.1em; cursor:pointer; color:#fff;
+  background: linear-gradient(45deg,#007bff,#0056b3); transition:0.3s;
 }
+.answer-btn:hover { background: linear-gradient(45deg,#0056b3,#007bff); transform: scale(1.05); }
+p span { font-weight:bold; }
+
+/* Modal */
 .modal {
-  display: none; position: fixed; top:0; left:0;
-  width: 100%; height: 100%; background: rgba(0,0,0,0.8);
-  justify-content: center; align-items: center;
-  opacity: 0; transition: opacity 0.6s ease; z-index: 20;
+  display: none;
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.85);
+  justify-content:center;
+  align-items:center;
+  color:white;
 }
-.modal.show { display: flex; opacity: 1; }
 .modal-content {
-  background: rgba(255,255,255,0.15); backdrop-filter: blur(15px);
-  padding: 20px; border-radius: 20px; width: 80%; max-width: 700px; color: #fff;
+  background: rgba(0,0,0,0.75);
+  padding:20px;
+  border-radius:20px;
+  max-width:500px;
+  width:90%;
+  text-align:left;
 }
-.bar { height: 25px; background: linear-gradient(90deg, #00c6ff, #0072ff);
- border-radius: 10px; margin: 8px 0; width: 0%; transition: width 1.2s ease-in-out; }
-.player { margin: 10px 0; text-align: left; }
-@media(max-width: 700px){ .container { margin: 30px 20px; } }
+.bar-container {
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
+  margin:5px 0;
+  height:20px;
+  width:100%;
+}
+.bar {
+  height:100%;
+  border-radius:10px;
+  width:0;
+  transition: width 1s ease;
+}
+.player { margin:10px 0; }
+
+/* Botão Instagram */
+#instagramBtn {
+  position: fixed;
+  right: 20px;
+  bottom: 50px;
+  background: rgba(255,255,255,0.9);
+  color: #000;
+  border-radius: 15px;
+  padding: 10px;
+  text-align: center;
+  width: 200px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  font-family: Arial, sans-serif;
+  z-index: 100;
+  transition: transform 0.3s;
+}
+#instagramBtn:hover { transform: scale(1.05); }
+#instagramBtn img {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 5px;
+}
+#instagramBtn .text-main {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+#instagramBtn .text-sub {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.2em;
+}
+#instagramBtn a {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+}
 </style>
 </head>
 <body>
-<div class="overlay"></div>
 
-<div class="container show" id="startScreen">
-  <h1>📖 Quiz Bíblico — Aventureiros da Fé 🌟</h1>
-  <p>Insira seu nome e a data para começar:</p>
-  <input type="text" id="playerName" placeholder="Seu nome" />
-  <input type="date" id="playDate" />
-  <br /><br />
+<div class="container" id="startScreen">
+  <h1>📖 Quiz Bíblico - Aventureiros da Fé 🌟</h1>
+  <p>Insira seu nome e a data de hoje:</p>
+  <input type="text" id="playerName" placeholder="Seu nome">
+  <input type="date" id="playDate">
+  <br>
   <button onclick="startGame()">Começar</button>
-  <button onclick="showStats()">📊 Estatísticas</button>
 </div>
 
-<div class="container" id="quizContainer" style="display:none;">
+<div class="container" id="quizContainer">
   <h2 id="levelTitle"></h2>
   <p id="question"></p>
   <div id="answers"></div>
   <p>Pontuação: <span id="score">0</span> | Acertos: <span id="correct">0</span> | Erros: <span id="wrong">0</span></p>
 </div>
 
-<div class="modal" id="statsModal">
+<!-- Modal final -->
+<div class="modal" id="endModal">
   <div class="modal-content">
-    <h2>🏆 Ranking dos Aventureiros da Fé</h2>
+    <h2>🎉 Parabéns, você finalizou o Quiz! 🎉</h2>
+    <p id="finalStats"></p>
+    <h3>📊 Ranking:</h3>
     <div id="ranking"></div>
-    <button onclick="closeStats()">Fechar</button>
+    <button onclick="closeEndModal()">Fechar</button>
     <button onclick="clearStats()">🗑️ Limpar Histórico</button>
   </div>
 </div>
 
-<div class="modal" id="endModal">
-  <div class="modal-content">
-    <h2>🎉 Fim do Quiz!</h2>
-    <p id="endMessage"></p>
-    <button onclick="closeEndModal()">Fechar</button>
-  </div>
+<!-- Botão Instagram -->
+<div id="instagramBtn">
+  <a href="https://www.instagram.com/aventureiros_dafe?igsh=MXJ4dG0wMmY2aXpsdg%3D%3D&utm_source=qr" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" />
+    <div class="text-main">Siga nosso Instagram</div>
+    <div class="text-sub">📸 Tire um print do resultado e nos marque no Instagram @aventureiros_dafe</div>
+  </a>
 </div>
 
 <script>
-// Perguntas exemplo: 10 níveis x 10 perguntas
-const questions = [];
-for(let level=1; level<=10; level++){
-  for(let q=1; q<=10; q++){
-    questions.push({
-      q:`Nível ${level} - Pergunta ${q}: Qual é a resposta correta?`,
-      a:['A','B','C','D'],
-      c:Math.floor(Math.random()*4)
-    });
+// Preenche data de hoje
+document.getElementById('playDate').value = new Date().toISOString().split('T')[0];
+
+// Inicialização
+let level=1, questionInLevel=0, score=0, correct=0, wrong=0;
+let playerName='', playDate='';
+
+// Perguntas (10 níveis x 10 perguntas)
+const questionsPerLevel = [
+  // Nível 1
+  [
+    {q:'Quem construiu a arca?', a:['Moisés','Noé','Abraão','Davi'], c:1},
+    {q:'Qual o primeiro livro da Bíblia?', a:['Gênesis','Êxodo','Levítico','Salmos'], c:0},
+    {q:'Quem foi jogado na cova dos leões?', a:['Elias','Jonas','Daniel','José'], c:2},
+    {q:'Onde Jesus nasceu?', a:['Jerusalém','Belém','Nazaré','Egito'], c:1},
+    {q:'Quem negou Jesus três vezes?', a:['João','Pedro','Tiago','Judas'], c:1},
+    {q:'Qual discípulo era cobrador de impostos?', a:['Mateus','Pedro','Tiago','Tomé'], c:0},
+    {q:'Qual fruto transformado em vinho em Caná?', a:['Maçã','Uva','Pera','Figo'], c:1},
+    {q:'Quem interpretou os sonhos de Faraó?', a:['José','Moisés','Elias','Daniel'], c:0},
+    {q:'Quem foi salvo por um peixe?', a:['Jonas','Noé','Abraão','Elias'], c:0},
+    {q:'Quem é chamado de homem segundo o coração de Deus?', a:['Davi','Saul','Elias','Samuel'], c:0}
+  ],
+  // Nível 2
+  [
+    {q:'Quem sucedeu Moisés como líder de Israel?', a:['Josué','Calebe','Elias','Samuel'], c:0},
+    {q:'Quem desafiou os profetas de Baal?', a:['Elias','Isaías','Jeremias','Daniel'], c:0},
+    {q:'Quem foi preso e libertado por um anjo?', a:['Pedro','Paulo','Jonas','Daniel'], c:0},
+    {q:'Qual mar se abriu para Israel?', a:['Mar Morto','Mar Vermelho','Mar da Galileia','Rio Jordão'], c:1},
+    {q:'Quem escreveu a maioria dos Salmos?', a:['Davi','Salomão','Moisés','Elias'], c:0},
+    {q:'Quem recebeu os 10 mandamentos?', a:['Moisés','Josué','Arão','Calebe'], c:0},
+    {q:'Quem foi o primeiro rei de Israel?', a:['Saul','Davi','Salomão','Elias'], c:0},
+    {q:'Quem foi lançado na fornalha ardente?', a:['Sadraque, Mesaque e Abede-Nego','Daniel','Jonas','Elias'], c:0},
+    {q:'Quem era conhecido por sua grande sabedoria?', a:['Salomão','Davi','Elias','Moisés'], c:0},
+    {q:'Quem foi chamado para profetizar desde o ventre materno?', a:['Jeremias','Isaías','Samuel','Elias'], c:0}
+  ],
+  // Nível 3 (corrigido)
+  [
+    {q:'Quem foi vendido pelos irmãos como escravo?', a:['José','Moisés','Elias','Daniel'], c:0},
+    {q:'Quem andou sobre as águas?', a:['Pedro','Jesus','Paulo','Tomé'], c:1},
+    {q:'Quem curou um cego de nascença?', a:['Jesus','Pedro','Paulo','Elias'], c:0},
+    {q:'Quem foi o traidor de Jesus?', a:['Judas','Pedro','João','Tiago'], c:0},
+    {q:'Qual profeta foi engolido por um grande peixe?', a:['Jonas','Elias','Jeremias','Daniel'], c:0},
+    {q:'Quem libertou os hebreus da fornalha ardente?', a:['Sadraque, Mesaque e Abede-Nego','Daniel','Jonas','Elias'], c:0},
+    {q:'Quem venceu Golias?', a:['Davi','Saul','Josué','Elias'], c:0},
+    {q:'Quem interpretou sonhos na Babilônia?', a:['Daniel','José','Elias','Moisés'], c:0},
+    {q:'Quem foi ressuscitado por Jesus?', a:['Lázaro','Jairo','Filha de Jairo','Tabita'], c:0},
+    {q:'Quem curou a sogra de Pedro?', a:['Jesus','Pedro','Paulo','João'], c:0}
+  ],
+  // Nível 4
+  [
+    {q:'Quem foi o último juiz de Israel?', a:['Samuel','Elias','Gideão','Sansão'], c:0},
+    {q:'Quem multiplicou pães e peixes?', a:['Jesus','Pedro','Paulo','João'], c:0},
+    {q:'Quem foi chamado de apóstolo dos gentios?', a:['Paulo','Pedro','João','Mateus'], c:0},
+    {q:'Quem traiu Jesus com um beijo?', a:['Judas','Pedro','João','Tomé'], c:0},
+    {q:'Quem foi o primeiro rei de Israel?', a:['Saul','Davi','Salomão','Elias'], c:0},
+    {q:'Quem foi lançado na cova dos leões?', a:['Daniel','José','Jonas','Elias'], c:0},
+    {q:'Quem foi batizado no rio Jordão?', a:['Jesus','João','Paulo','Pedro'], c:0},
+    {q:'Quem curou um paralítico em Cafarnaum?', a:['Jesus','Pedro','Paulo','João'], c:0},
+    {q:'Quem era conhecido por sua sabedoria e riqueza?', a:['Salomão','Davi','Elias','Moisés'], c:0},
+    {q:'Quem foi chamado para profetizar em Israel antes de Judá?', a:['Isaías','Jeremias','Ezequiel','Daniel'], c:0}
+  ],
+  // Nível 5 (corrigido)
+  [
+    {q:'Quem foi o primeiro mártir cristão?', a:['Estevão','Tiago','Pedro','Paulo'], c:0},
+    {q:'Quem nasceu de uma virgem?', a:['Jesus','João Batista','Paulo','Maria Madalena'], c:0},
+    {q:'Quem pregou no dia de Pentecostes?', a:['Pedro','Paulo','João','Tiago'], c:0},
+    {q:'Quem curou uma mulher com fluxo de sangue?', a:['Jesus','Pedro','Paulo','João'], c:0},
+    {q:'Quem foi chamado por Deus para libertar Israel do Egito?', a:['Moisés','Josué','Elias','Davi'], c:0},
+    {q:'Quem foi visitado por um anjo anunciando o nascimento de Jesus?', a:['Maria','Isabel','Ana','Marta'], c:0},
+    {q:'Quantos discípulos Jesus escolheu?', a:['12','7','10','3'], c:0},
+    {q:'Quem foi primeiro discípulo chamado por Jesus?', a:['Pedro','André','Tiago','João'], c:0},
+    {q:'Qual apóstolo escreveu o livro de Apocalipse?', a:['João','Pedro','Paulo','Tiago'], c:0},
+    {q:'Quem curou o paralítico em Cafarnaum?', a:['Jesus','Pedro','Paulo','João'], c:0}
+  ],
+  // Nível 6 (corrigido)
+  [
+    {q:'Quem foi chamado de profeta chorão?', a:['Jeremias','Isaías','Ezequiel','Daniel'], c:0},
+    {q:'Quem foi elevado ao céu em um redemoinho?', a:['Elias','Moisés','Ezequiel','Jesus'], c:0},
+    {q:'Quem era conhecido por sua força e derrotou os filisteus?', a:['Sansão','Davi','Golias','Josué'], c:0},
+    {q:'Quem guiou o povo de Israel na travessia do Jordão?', a:['Josué','Moisés','Calebe','Elias'], c:0},
+    {q:'Quem foi ressuscitado por Jesus?', a:['Lázaro','Jairo','Filha de Jairo','Tabita'], c:0},
+    {q:'Quem curou um cego chamado Bartimeu?', a:['Jesus','Pedro','Paulo','João'], c:0},
+    {q:'Quem traiu Jesus?', a:['Judas','Pedro','João','Tiago'], c:0},
+    {q:'Quem escreveu Apocalipse?', a:['João','Pedro','Paulo','Mateus'], c:0},
+    {q:'Quem venceu Golias?', a:['Davi','Saul','Josué','Elias'], c:0},
+    {q:'Quem era conhecido por sua grande sabedoria?', a:['Salomão','Davi','Elias','Moisés'], c:0}
+  ],
+  // Nível 7 (corrigido)
+  [
+    {q:'Quem construiu o templo em Jerusalém?', a:['Salomão','Davi','Ezequias','Josias'], c:0},
+    {q:'Quem recebeu os 10 mandamentos?', a:['Moisés','Josué','Arão','Calebe'], c:0},
+    {q:'Quem foi o último juiz de Israel?', a:['Samuel','Elias','Gideão','Sansão'], c:0},
+    {q:'Quem foi batizado por João Batista?', a:['Jesus','Pedro','Paulo','Tiago'], c:0},
+    {q:'Quem foi o primeiro rei de Israel?', a:['Saul','Davi','Salomão','Elias'], c:0},
+    {q:'Quem interpretou sonhos na Babilônia?', a:['Daniel','José','Elias','Moisés'], c:0},
+    {q:'Quem curou um paralítico em Cafarnaum?', a:['Jesus','Pedro','Paulo','João'], c:0},
+    {q:'Quem foi chamado de apóstolo dos gentios?', a:['Paulo','Pedro','João','Mateus'], c:0},
+    {q:'Quem foi traidor de Jesus?', a:['Judas','Pedro','João','Tiago'], c:0},
+    {q:'Quem multiplicou pães e peixes?', a:['Jesus','Pedro','Paulo','João'], c:0}
+  ],
+  // Nível 8 (corrigido)
+  [
+    {q:'Quem era conhecido por sua grande sabedoria?', a:['Salomão','Davi','Elias','Moisés'], c:0},
+    {q:'Quem foi chamado para profetizar em Israel antes de Judá?', a:['Isaías','Jeremias','Ezequiel','Daniel'], c:0},
+    {q:'Quem ressuscitou a filha de Jairo?', a:['Jesus','Pedro','Paulo','João'], c:0},
+    {q:'Quem interpretou os sonhos de Faraó?', a:['José','Daniel','Elias','Moisés'], c:0},
+    {q:'Quem acalmou a tempestade no mar?', a:['Jesus','Pedro','Paulo','João'], c:0},
+    {q:'Quem curou dez leprosos?', a:['Jesus','Pedro','Paulo','João'], c:0},
+    {q:'Quem escreveu Apocalipse?', a:['João','Pedro','Paulo','Mateus'], c:0},
+    {q:'Quem foi elevado ao céu em redemoinho?', a:['Elias','Moisés','Ezequiel','Jesus'], c:0},
+    {q:'Quem venceu Golias?', a:['Davi','Saul','Josué','Elias'], c:0},
+    {q:'Quem era conhecido por sua sabedoria e riqueza?', a:['Salomão','Davi','Elias','Moisés'], c:0}
+  ],
+  // Nível 9 (corrigido)
+  [
+    {q:'Quem foi chamado profeta do vento e do fogo?', a:['Elias','Eliseu','Isaías','Jeremias'], c:0},
+    {q:'Quem batizou no rio Jordão?', a:['João Batista','Jesus','Pedro','Paulo'], c:0},
+    {q:'Quem foi libertado da prisão por um anjo?', a:['Pedro','Paulo','Jonas','Daniel'], c:0},
+    {q:'Quem pregou sobre o arrependimento no deserto?', a:['João Batista','Elias','Isaías','Jeremias'], c:0},
+    {q:'Quem traiu Jesus?', a:['Judas','Pedro','João','Tiago'], c:0},
+    {q:'Quem escreveu o livro de Apocalipse?', a:['João','Pedro','Paulo','Mateus'], c:0},
+    {q:'Quem foi elevado ao céu em redemoinho?', a:['Elias','Moisés','Ezequiel','Jesus'], c:0},
+    {q:'Quem venceu Golias?', a:['Davi','Saul','Josué','Elias'], c:0},
+    {q:'Quem era conhecido por sua grande sabedoria?', a:['Salomão','Davi','Elias','Moisés'], c:0},
+    {q:'Quem foi salvo por um grande peixe?', a:['Jonas','Elias','Daniel','José'], c:0}
+  ],
+  // Nível 10 (final)
+  [
+    {q:'Quem escreveu o livro de Apocalipse?', a:['João','Pedro','Paulo','Mateus'], c:0},
+    {q:'Quem é chamado o Cordeiro de Deus?', a:['Jesus','Pedro','Paulo','João'], c:0},
+    {q:'Quem subiu ao céu diante dos discípulos?', a:['Jesus','Elias','Moisés','Paulo'], c:0},
+    {q:'Quem prometeu voltar?', a:['Jesus','Pedro','João','Tiago'], c:0},
+    {q:'Quem é o caminho, a verdade e a vida?', a:['Jesus','Pedro','Paulo','João'], c:0},
+    {q:'Quem ressuscitou Lázaro?', a:['Jesus','Pedro','Paulo','João'], c:0},
+    {q:'Quem é o Alfa e o Ômega?', a:['Jesus','Deus Pai','Espírito Santo','Pedro'], c:0},
+    {q:'Quem enviou o Espírito Santo?', a:['Jesus','Pedro','Paulo','João'], c:0},
+    {q:'Quem fundou a Igreja Cristã?', a:['Jesus','Pedro','Paulo','João'], c:0},
+    {q:'Quem é o Salvador do mundo?', a:['Jesus','Pedro','Paulo','João'], c:0}
+  ]
+];
+
+// Funções principais
+function startGame(){
+  playerName=document.getElementById('playerName').value.trim();
+  playDate=document.getElementById('playDate').value;
+  if(!playerName||!playDate){alert('Preencha seu nome e a data!');return;}
+  document.getElementById('startScreen').style.display='none';
+  document.getElementById('quizContainer').style.display='block';
+  loadQuestion();
+}
+function loadQuestion(){
+  if(level>10){endGame();return;}
+  const levelData=questionsPerLevel[level-1];
+  if(questionInLevel>=levelData.length){
+    level++;
+    questionInLevel=0;
+    loadQuestion();
+    return;
   }
-}
-
-let currentQuestion = 0;
-let score = 0;
-let correct = 0;
-let wrong = 0;
-let playerName = '';
-let playDate = '';
-
-function startGame() {
-  playerName = document.getElementById('playerName').value.trim();
-  playDate = document.getElementById('playDate').value;
-  if(!playerName || !playDate){ alert('Por favor, insira seu nome e a data!'); return; }
-  document.getElementById('startScreen').classList.remove('show');
-  setTimeout(() => {
-    document.getElementById('startScreen').style.display = 'none';
-    document.getElementById('quizContainer').style.display = 'block';
-    setTimeout(() => document.getElementById('quizContainer').classList.add('show'), 50);
-    showQuestion();
-  }, 600);
-}
-
-function showQuestion() {
-  if (currentQuestion >= questions.length) { endGame(); return; }
-  const q = questions[currentQuestion];
-  const levelNumber = Math.floor(currentQuestion/10) + 1;
-  const questionNumber = (currentQuestion%10)+1;
-  document.getElementById('levelTitle').innerText = `Nível ${levelNumber} - Pergunta ${questionNumber}`;
-  document.getElementById('question').innerText = q.q;
-  const answersDiv = document.getElementById('answers');
-  answersDiv.innerHTML = '';
-  q.a.forEach((option, i) => {
-    const btn = document.createElement('button');
-    btn.innerText = option;
-    btn.onclick = () => checkAnswer(i);
-    answersDiv.appendChild(btn);
+  document.getElementById('levelTitle').textContent='Nível '+level;
+  const q=levelData[questionInLevel];
+  document.getElementById('question').textContent=q.q;
+  const ansDiv=document.getElementById('answers');
+  ansDiv.innerHTML='';
+  q.a.forEach((opt,i)=>{
+    const b=document.createElement('button');
+    b.textContent=opt;
+    b.className='answer-btn';
+    b.onclick=()=>checkAnswer(i);
+    ansDiv.appendChild(b);
   });
 }
-
-function checkAnswer(i) {
-  const q = questions[currentQuestion];
-  if(i === q.c){ score += 10; correct++; } else { wrong++; }
-  document.getElementById('score').innerText = score;
-  document.getElementById('correct').innerText = correct;
-  document.getElementById('wrong').innerText = wrong;
-  currentQuestion++;
-  showQuestion();
+function checkAnswer(choice){
+  const q=questionsPerLevel[level-1][questionInLevel];
+  if(choice===q.c){score+=10;correct++;}
+  else{wrong++;}
+  document.getElementById('score').textContent=score;
+  document.getElementById('correct').textContent=correct;
+  document.getElementById('wrong').textContent=wrong;
+  questionInLevel++;
+  loadQuestion();
 }
-
-function endGame() {
-  saveStats();
-  document.getElementById('endMessage').innerText = `${playerName}, sua pontuação final é ${score} pts! 🎉`;
-  const modal = document.getElementById('endModal');
-  modal.style.display = 'flex';
-  setTimeout(()=>modal.classList.add('show'),50);
+function endGame(){
+  document.getElementById('quizContainer').style.display='none';
+  const stats=`Jogador: ${playerName}<br>Data: ${playDate}<br>Pontuação: ${score}<br>Acertos: ${correct}<br>Erros: ${wrong}`;
+  document.getElementById('finalStats').innerHTML=stats;
+  const data={name:playerName,date:playDate,score:score};
+  let saved=JSON.parse(localStorage.getItem('quizRanking')||'[]');
+  saved.push(data);
+  localStorage.setItem('quizRanking',JSON.stringify(saved));
+  updateRanking();
+  document.getElementById('endModal').style.display='flex';
 }
-
-function closeEndModal(){
-  const modal = document.getElementById('endModal');
-  modal.classList.remove('show');
-  setTimeout(() => modal.style.display = 'none',600);
-  resetGame();
-  document.getElementById('quizContainer').classList.remove('show');
-  setTimeout(() => {
-    document.getElementById('quizContainer').style.display='none';
-    document.getElementById('startScreen').style.display='block';
-    setTimeout(() => document.getElementById('startScreen').classList.add('show'), 50);
-  },600);
+function updateRanking(){
+  const rankingDiv=document.getElementById('ranking');
+  let saved=JSON.parse(localStorage.getItem('quizRanking')||'[]');
+  saved.sort((a,b)=>b.score-a.score);
+  rankingDiv.innerHTML='';
+  saved.slice(0,5).forEach((p,i)=>{
+    const color=i===0?'#ffd700':i===1?'#c0c0c0':i===2?'#cd7f32':'#00ff99';
+    const bar=`<div class="bar-container"><div class="bar" style="background:${color};width:${p.score/2}%"></div></div>`;
+    rankingDiv.innerHTML+=`<div class="player">${i+1}. ${p.name} - ${p.score} pts ${bar}</div>`;
+  });
 }
-
-function resetGame() { currentQuestion=0; score=0; correct=0; wrong=0;
-  document.getElementById('score').innerText=score;
-  document.getElementById('correct').innerText=correct;
-  document.getElementById('wrong').innerText=wrong;
-}
-
-function saveStats() {
-  const stats = JSON.parse
+function closeEndModal(){document.getElementById('endModal').style.display='none';}
+function clearStats(){localStorage.removeItem('quizRanking');updateRanking();}
+</script>
+</body>
+</html>
